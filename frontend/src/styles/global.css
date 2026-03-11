@@ -1,0 +1,247 @@
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ====================================
+   FixIt Web - Global Styles
+   ==================================== */
+
+:root {
+    /* Modern HSL Color Palette - Customer (Orange) */
+    --h-primary: 18;
+    --s-primary: 100%;
+    --l-primary: 61%;
+    --color-primary-hsl: hsl(var(--h-primary), var(--s-primary), var(--l-primary));
+    --color-primary-light: hsl(var(--h-primary), var(--s-primary), 95%);
+    --color-primary-soft: hsla(var(--h-primary), var(--s-primary), var(--l-primary), 0.1);
+
+    /* Modern HSL Color Palette - Handyman (Teal) */
+    --h-secondary: 171;
+    --s-secondary: 44%;
+    --l-secondary: 51%;
+    --color-secondary-hsl: hsl(var(--h-secondary), var(--s-secondary), var(--l-secondary));
+
+    /* Elevated Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-premium: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+
+    /* Transitions */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Theme Light Overrides */
+    --color-primary: #ff6b35;
+    --color-primary-dark: #e85a2a;
+    --color-secondary: #4db8a8;
+    --color-secondary-dark: #3aa394;
+    
+    --color-bg-light: #f8fafc;
+    --color-surface: #ffffff;
+    --color-border: #e2e8f0;
+    
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-tertiary: #94a3b8;
+    
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+    background-color: var(--color-bg-light);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Centered Container for Web */
+.container {
+    width: 90%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Common Layout Helpers */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5 {
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+}
+
+a {
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+/* Section Spacing */
+.section-padding {
+    padding: 60px 0;
+}
+
+/* Form Styles */
+.form-input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    background: var(--color-surface);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Glassmorphism */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.glass-dark {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    opacity: 0;
+    animation: fadeInUp var(--transition-smooth) forwards;
+}
+
+/* Base Components Styles */
+.card-premium {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-smooth);
+    padding: 24px;
+}
+
+.card-premium:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-8px);
+    border-color: var(--color-primary-soft);
+}
+
+/* Utilities for Alignment Fixes */
+.center-block {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.max-w-web {
+    max-width: 1400px;
+}
+
+.content-inner {
+    width: 90%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Icons */
+.icon-svg {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+}
+.icon-svg svg {
+    width: 100%;
+    height: 100%;
+}
+.icon-xs { width: 16px; height: 16px; }
+.icon-sm { width: 20px; height: 20px; }
+.icon-md { width: 24px; height: 24px; }
+.icon-lg { width: 32px; height: 32px; }
+.icon-xl { width: 48px; height: 48px; }
+.icon-2xl { width: 64px; height: 64px; }
+
+.icon-animated {
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.icon-gradient stop:first-child { stop-color: #FF6B35; }
+.icon-gradient stop:last-child { stop-color: #F7931E; }

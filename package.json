@@ -1,0 +1,21 @@
+{
+  "name": "fixit-web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "FixIt - Egyptian Marketplace for Home Maintenance Services",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "lint": "cd frontend && npm run lint",
+    "install-all": "npm install && cd frontend && npm install"
+  },
+  "keywords": [
+    "fixit",
+    "marketplace",
+    "handymen",
+    "egypt"
+  ],
+  "author": "",
+  "license": "ISC"
+}

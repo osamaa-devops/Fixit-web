@@ -1,0 +1,30 @@
+﻿
+> frontend@0.0.0 lint
+> eslint .
+
+
+F:\Fixit web\frontend\src\components\common\Input.tsx
+  11:27  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+F:\Fixit web\frontend\src\components\common\Input.tsx:11:27
+   9 | export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  10 |   ({ className, label, error, id, ...props }, ref) => {
+> 11 |     const inputId = id || Math.random().toString(36).substring(7);
+     |                           ^^^^^^^^^^^^^ Cannot call impure function
+  12 |     
+  13 |     return (
+  14 |       <div style={{ marginBottom: '1rem' }}>  react-hooks/purity
+
+F:\Fixit web\frontend\src\components\layout\Navbar.tsx
+  3:10  error  'clsx' is defined but never used  @typescript-eslint/no-unused-vars
+
+F:\Fixit web\frontend\src\components\shared\HandymanCard.tsx
+  2:10  error  'clsx' is defined but never used  @typescript-eslint/no-unused-vars
+
+F:\Fixit web\frontend\src\routes\ProtectedRoute.tsx
+  17:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 4 problems (4 errors, 0 warnings)
+
