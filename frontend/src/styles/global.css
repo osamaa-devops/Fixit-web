@@ -140,16 +140,25 @@ a {
 .form-input {
     width: 100%;
     padding: 14px;
-    border: 2px solid var(--color-border);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     font-family: inherit;
     font-size: 1rem;
-    background: var(--color-surface);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+    color: white;
 }
 
 /* Glassmorphism */

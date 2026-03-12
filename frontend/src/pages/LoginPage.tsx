@@ -27,7 +27,7 @@ export function LoginPage() {
             type="tel" 
             placeholder="رقم الهاتف" 
             dir="ltr"
-            className="bg-white/5 border-white/10 text-white placeholder-white/40 focus:bg-white/10"
+            className="bg-white/8 border-white/15 text-white placeholder-white/40 focus:bg-white/12 focus:shadow-[0_0_20px_rgba(255,107,53,0.2)]"
             required 
           />
         </div>
@@ -38,7 +38,7 @@ export function LoginPage() {
               type={showPassword ? 'text' : 'password'} 
               placeholder="كلمة المرور" 
               dir="ltr"
-              className="bg-white/5 border-white/10 text-white placeholder-white/40 focus:bg-white/10 pr-12"
+              className="bg-white/8 border-white/15 text-white placeholder-white/40 focus:bg-white/12 focus:shadow-[0_0_20px_rgba(255,107,53,0.2)] pr-12"
               required 
             />
             <button 

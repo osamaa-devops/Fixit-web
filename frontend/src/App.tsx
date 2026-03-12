@@ -36,8 +36,9 @@ export default function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/verify-otp" element={<VerifyOTPPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/pending-approval" element={<PendingApprovalPage />} />
+            
           </Route>
+          <Route path="/pending-approval" element={<PendingApprovalPage />} />
           {/* Admin Login - Standalone */}
           <Route path="/admin/login" element={<AdminLogin />} />
         </Route>
