@@ -8,7 +8,6 @@ interface UseFormReturn<T> {
   errors: FormError;
   touched: { [key: string]: boolean };
   isSubmitting: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setValue: (field: keyof T, value: unknown) => void;
   setError: (field: string, error: string) => void;
   setTouched: (field: string, touched: boolean) => void;
@@ -114,9 +113,8 @@ export const useForm = <T extends Record<string, unknown>>(
         try {
           setIsSubmitting(true);
           await onSubmit(values);
-        } catch (error) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          console.error('Form submission error:', error);
+        } catch (_error) {
+          console.error('Form submission error:', _error);
         } finally {
           setIsSubmitting(false);
         }

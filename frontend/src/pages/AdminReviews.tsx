@@ -34,7 +34,8 @@ export function AdminReviews() {
   });
 
   return (
-    <div className="p-8 text-white font-sans">
+    <div className="min-h-screen bg-[#0b0f19] p-8 text-white font-sans animate-fade-in-up">
+      <div className="max-w-[1600px] mx-auto">
       {/* Stats */}
       <div className="flex flex-wrap gap-4 mb-8">
         <div className="bg-red-500/10 border border-red-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
@@ -90,6 +91,7 @@ export function AdminReviews() {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

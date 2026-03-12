@@ -60,7 +60,8 @@ export function AdminApprovals() {
   );
 
   return (
-    <div className="p-8 text-white font-sans">
+    <div className="min-h-screen bg-[#0b0f19] p-8 text-white font-sans animate-fade-in-up">
+      <div className="max-w-[1600px] mx-auto">
       
       {/* Header Stats */}
       <div className="flex flex-wrap gap-4 mb-8">
@@ -134,6 +135,7 @@ export function AdminApprovals() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

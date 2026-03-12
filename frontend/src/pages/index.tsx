@@ -41,3 +41,6 @@ export { AdminUsers } from './AdminUsers';
 export { AdminRequests } from './AdminRequests';
 export { AdminCategories } from './AdminCategories';
 export { AdminReviews } from './AdminReviews';
+
+// Handyman Login
+export { HandymanLogin } from './HandymanLogin';

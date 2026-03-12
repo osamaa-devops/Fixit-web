@@ -2,6 +2,18 @@ import { Link } from 'react-router-dom';
 import { HelpCircle, LogOut, Clock, CheckCircle, Search, History, User } from 'lucide-react';
 import { clsx } from 'clsx';
 
+interface RequestItemProps {
+  title: string;
+  icon: string;
+  handymanName: string;
+  time: string;
+  status: 'pending' | 'active' | 'completed' | 'cancelled';
+  statusLabel: string;
+  to: string;
+  delay: string;
+  isHistory?: boolean;
+}
+
 // Extracted from web-customer-dashboard.html
 export function CustomerDashboard() {
   return (
@@ -145,7 +157,7 @@ export function CustomerDashboard() {
   );
 }
 
-function RequestItem({ title, icon, handymanName, time, status, statusLabel, to, delay, isHistory = false }: any) {
+function RequestItem({ title, icon, handymanName, time, status, statusLabel, to, delay, isHistory = false }: RequestItemProps) {
   return (
     <Link 
       to={to} 

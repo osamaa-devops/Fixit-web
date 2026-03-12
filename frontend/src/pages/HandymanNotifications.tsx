@@ -17,7 +17,8 @@ const NOTIFICATIONS: Notification[] = [
 
 export function HandymanNotifications() {
   return (
-    <div className="max-w-[800px] mx-auto p-4 md:p-8 animate-fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] p-4 md:p-8 font-sans animate-fade-in-up">
+      <div className="max-w-[800px] mx-auto">
       <div className="bg-white/70 backdrop-blur-[25px] border border-white/40 rounded-[40px] shadow-2xl overflow-hidden">
         <div className="p-8 border-b border-white/40 flex justify-between items-center">
           <h1 className="text-[1.8rem] font-black text-[#1a1a1a] flex items-center gap-3">الإشعارات <span className="text-2xl">🔔</span></h1>
@@ -67,6 +68,7 @@ export function HandymanNotifications() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

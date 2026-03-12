@@ -19,6 +19,7 @@ import {
   HandymanProfile,
   HandymanDashboard, HandymanJobs, HandymanSettings, HandymanPortfolio, HandymanReviews, HandymanNotifications,
   AdminLogin, AdminDashboard, AdminApprovals, AdminUsers, AdminRequests, AdminCategories, AdminReviews,
+  HandymanLogin,
 } from './pages';
 
 export default function App() {
@@ -41,6 +42,8 @@ export default function App() {
           <Route path="/pending-approval" element={<PendingApprovalPage />} />
           {/* Admin Login - Standalone */}
           <Route path="/admin/login" element={<AdminLogin />} />
+          {/* Handyman Login - Standalone */}
+          <Route path="/handyman/login" element={<HandymanLogin />} />
         </Route>
 
         {/* Public Shared Info Routes */}

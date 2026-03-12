@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { HandymanCard } from '../components/shared/HandymanCard';
 
-// Dummy data for top handymen
 const TOP_HANDYMEN = [
   {
     id: '1',
@@ -47,11 +46,20 @@ export function CustomerHome() {
             سواء محتاج سباك، كهربائي، أو نجار.. فيكس إت بتقدم لك نخبة من أفضل الفنيين المعتمدين بضغطة زر.
           </p>
 
-          <div className="flex bg-white p-2 rounded-[20px] shadow-lg max-w-[580px] mt-10 transition-all focus-within:scale-[1.02] focus-within:shadow-xl focus-within:border-primary border border-white/50 text-text-primary">
+          {/* ✅ Search Box */}
+          <div className="flex bg-white p-2 rounded-[20px] shadow-lg max-w-[580px] mt-10 transition-all focus-within:scale-[1.02] focus-within:shadow-xl border border-white/50">
             <input 
               type="text" 
               placeholder="عن إيه بتدور؟ (مثل: تصليح تكييف)" 
-              className="flex-1 border-none px-5 text-[1.1rem] bg-transparent outline-none font-bold"
+              className="flex-1 border-none outline-none bg-transparent px-5 text-[1.1rem] font-bold placeholder:font-medium"
+              style={{
+                color: '#0f172a',                // ✅ النص داكن
+                background: 'transparent',
+                caretColor: '#ff6b35',           // ✅ لون الـ cursor
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.background = 'transparent';
+              }}
             />
             <button className="bg-primary text-white border-none py-4 px-8 rounded-xl text-[1.1rem] font-bold cursor-pointer transition-colors hover:bg-primary-dark ml-1">
               بحث الآن
@@ -86,12 +94,12 @@ export function CustomerHome() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <CategoryCard title="سباكة" icon="🚰" count={124} to="/customer/search?category=plumbing" />
-            <CategoryCard title="كهرباء" icon="⚡" count={98} to="/customer/search?category=elec" />
-            <CategoryCard title="نجارة" icon="🪚" count={85} to="/customer/search?category=carp" />
-            <CategoryCard title="تكييف" icon="❄️" count={67} to="/customer/search?category=ac" />
-            <CategoryCard title="دهانات" icon="🖌️" count={54} to="/customer/search?category=painting" />
-            <CategoryCard title="نظافة" icon="🧹" count={112} to="/customer/search?category=cleaning" />
+            <CategoryCard title="سباكة"  icon="🚰" count={124} to="/customer/search?category=plumbing" />
+            <CategoryCard title="كهرباء" icon="⚡" count={98}  to="/customer/search?category=elec" />
+            <CategoryCard title="نجارة"  icon="🪚" count={85}  to="/customer/search?category=carp" />
+            <CategoryCard title="تكييف"  icon="❄️" count={67}  to="/customer/search?category=ac" />
+            <CategoryCard title="دهانات" icon="🖌️" count={54}  to="/customer/search?category=painting" />
+            <CategoryCard title="نظافة"  icon="🧹" count={112} to="/customer/search?category=cleaning" />
           </div>
         </div>
 
@@ -142,7 +150,8 @@ export function CustomerHome() {
   );
 }
 
-// Subcomponents
+// ── Subcomponents ──────────────────────────────────────
+
 function ArrowLeftIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="rotate-180">
@@ -152,15 +161,13 @@ function ArrowLeftIcon() {
   );
 }
 
-function CategoryCard({ title, icon, count, to }: { title: string, icon: string, count: number, to: string }) {
+function CategoryCard({ title, icon, count, to }: { title: string; icon: string; count: number; to: string }) {
   return (
     <Link to={to} className="bg-white rounded-[24px] p-6 text-center text-text-primary border border-border transition-all duration-400 shadow-sm cursor-pointer relative overflow-hidden group hover:-translate-y-3 hover:border-primary-soft hover:shadow-xl">
       <div className="absolute top-0 left-0 w-full h-1 bg-primary scale-x-0 transition-transform duration-400 origin-right group-hover:scale-x-100"></div>
-      
       <div className="w-[72px] h-[72px] bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary text-[32px] transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
         {icon}
       </div>
-      
       <h2 className="font-extrabold text-[1.2rem] mb-1">{title}</h2>
       <span className="text-text-secondary font-medium text-[0.95rem]">{count} فني متاح</span>
     </Link>

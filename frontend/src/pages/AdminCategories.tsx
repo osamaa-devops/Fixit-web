@@ -27,7 +27,8 @@ export function AdminCategories() {
   };
 
   return (
-    <div className="p-8 font-sans max-w-[1400px] mx-auto animate-fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] p-8 font-sans animate-fade-in-up">
+      <div className="max-w-[1400px] mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-[1.8rem] font-black text-[#0f172a] m-0">أقسام الخدمات والصيانة</h1>
@@ -100,6 +101,7 @@ export function AdminCategories() {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

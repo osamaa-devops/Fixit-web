@@ -31,7 +31,8 @@ export function AdminUsers() {
   });
 
   return (
-    <div className="p-8 font-sans max-w-[1400px] mx-auto animate-fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] p-8 font-sans animate-fade-in-up">
+      <div className="max-w-[1400px] mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-[1.8rem] font-black text-[#0f172a] m-0">قاعدة بيانات المستخدمين</h1>
         <button className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-xl font-black shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-600 hover:-translate-y-0.5">
@@ -130,6 +131,7 @@ export function AdminUsers() {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

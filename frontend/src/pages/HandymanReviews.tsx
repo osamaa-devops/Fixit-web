@@ -35,7 +35,8 @@ export function HandymanReviews() {
   }));
 
   return (
-    <div className="max-w-[1000px] mx-auto p-4 md:p-8 animate-fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] p-4 md:p-8 font-sans animate-fade-in-up">
+      <div className="max-w-[1000px] mx-auto">
       {/* Rating Summary Hero */}
       <div className="bg-white/70 backdrop-blur-2xl border border-white/40 rounded-[28px] p-8 md:p-10 shadow-xl mb-8 grid grid-cols-1 md:grid-cols-[auto,1fr] gap-10 items-center">
         <div className="text-center">
@@ -116,6 +117,7 @@ export function HandymanReviews() {
             </span>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

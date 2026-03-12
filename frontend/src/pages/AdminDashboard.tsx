@@ -37,7 +37,8 @@ const ACTIVITY_FEED = [
 
 export function AdminDashboard() {
   return (
-    <div className="p-8 text-white font-sans">
+    <div className="min-h-screen bg-[#0b0f19] p-8 text-white font-sans animate-fade-in-up">
+      <div className="max-w-[1600px] mx-auto">
       
       {/* KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
@@ -127,6 +128,7 @@ export function AdminDashboard() {
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   );

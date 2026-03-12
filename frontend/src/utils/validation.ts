@@ -64,7 +64,6 @@ export type BookingFormData = z.infer<typeof bookingSchema>;
 export type ReviewFormData = z.infer<typeof reviewSchema>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateField = (schema: z.ZodSchema, value: any, field: string) => {
   try {
     const fieldSchema = schema instanceof z.ZodObject ? schema.shape[field] : schema;

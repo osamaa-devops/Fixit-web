@@ -27,7 +27,8 @@ export function HandymanSettings() {
   const saveBtnCls = "mt-8 flex items-center gap-2 px-10 py-4 bg-gradient-to-br from-teal-600 to-secondary text-white rounded-xl font-extrabold text-[1.1rem] shadow-[0_10px_20px_rgba(77,184,168,0.2)] hover:shadow-[0_12px_25px_rgba(77,184,168,0.3)] hover:-translate-y-0.5 transition-all";
 
   return (
-    <div className="w-[95%] max-w-[1000px] mx-auto mt-10 mb-16 font-sans text-text-primary fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] font-sans text-text-primary animate-fade-in-up">
+      <div className="w-[95%] max-w-[1000px] mx-auto mt-10 mb-16">
       <div className="bg-white/70 backdrop-blur-[25px] border border-white/40 rounded-[40px] flex flex-col md:flex-row overflow-hidden min-h-[600px] shadow-[0_20px_40px_rgba(0,0,0,0.08)]">
         
         {/* Sidebar */}
@@ -214,6 +215,7 @@ export function HandymanSettings() {
           )}
 
         </main>
+      </div>
       </div>
     </div>
   );

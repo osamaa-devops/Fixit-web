@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useCustomerStore } from '../store/customerStore';
-import type { BookingData } from '../services/customer.service';
+import type { BookingData, CustomerProfile, ServiceRequest } from '../services/customer.service';
 import { customerService } from '../services/customer.service';
 
 export const useCustomerProfile = () => {
@@ -13,15 +13,14 @@ export const useCustomerProfile = () => {
 
 export const useUpdateCustomerProfile = () => {
   return useMutation({
-    mutationFn: (data: any) => customerService.updateProfile(data),
+    mutationFn: (data: Partial<CustomerProfile>) => customerService.updateProfile(data),
   });
 };
 
 export const useRequestHistory = (status?: string) => {
   return useQuery({
     queryKey: ['requestHistory', status],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queryFn: async (): Promise<any> => {
+    queryFn: async (): Promise<ServiceRequest[]> => {
       const data = await customerService.getRequestHistory(20, 0, status);
       return data;
     },

@@ -23,7 +23,8 @@ export function HandymanPortfolio() {
   };
 
   return (
-    <div className="portfolio-container max-w-[1200px] mx-auto p-4 md:p-8 animate-fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] p-4 md:p-8 font-sans animate-fade-in-up">
+      <div className="portfolio-container max-w-[1200px] mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <h1 className="text-[2rem] font-black text-[#1a1a1a] mb-2">إدارة معرض الأعمال</h1>
@@ -75,6 +76,7 @@ export function HandymanPortfolio() {
              <p className="text-slate-400 font-bold">لا توجد أعمال في معرضك بعد. ابدأ بإضافة صور لمهامك الناجحة!</p>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

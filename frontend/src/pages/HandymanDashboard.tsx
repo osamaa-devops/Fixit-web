@@ -64,7 +64,8 @@ export function HandymanDashboard() {
   const byStatus = (status: JobCard['status']) => MOCK_JOBS.filter(j => j.status === status);
 
   return (
-    <div className="font-sans text-text-primary flex flex-col h-full overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] font-sans text-text-primary flex flex-col overflow-hidden animate-fade-in-up">
+      <div className="flex flex-col h-full">
       
       {/* Performance Bar */}
       <div className="bg-white/40 backdrop-blur-[15px] border-b border-black/5 flex justify-center z-10 px-5 py-2 shrink-0">
@@ -190,6 +191,7 @@ export function HandymanDashboard() {
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   );

@@ -66,7 +66,8 @@ export function HandymanJobs() {
   }[job.state];
 
   return (
-    <div className="w-[95%] max-w-[1400px] mx-auto mt-10 mb-32 font-sans text-text-primary fade-in-up">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] font-sans text-text-primary animate-fade-in-up">
+      <div className="w-[95%] max-w-[1400px] mx-auto mt-10 mb-32">
       
       {/* Back button */}
       <button onClick={() => navigate('/handyman/dashboard')} className="flex items-center gap-2 text-text-secondary font-extrabold mb-6 px-4 py-2 bg-white/50 rounded-xl border border-black/5 hover:bg-white hover:text-secondary transition-all">
@@ -206,6 +207,7 @@ export function HandymanJobs() {
         </div>
       )}
 
+      </div>
     </div>
   );
 }

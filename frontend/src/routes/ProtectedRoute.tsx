@@ -1,13 +1,25 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
   allowedRoles?: ("customer" | "handyman" | "admin")[];
 }
 
 export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
-  // Mock auth state (to be replaced with Zustand later)
+  const location = useLocation();
+  
+  // Mock auth state - يتم تحديد الدور بناءً على المسار
   const isAuthenticated = true;
-  const userRole: "customer" | "handyman" | "admin" = "customer";
+  
+  // تحديد الدور بناءً على مسار الرابط الحالي
+  let userRole: "customer" | "handyman" | "admin" = "customer";
+  
+  if (location.pathname.startsWith("/admin")) {
+    userRole = "admin";
+  } else if (location.pathname.startsWith("/handyman")) {
+    userRole = "handyman";
+  } else if (location.pathname.startsWith("/customer")) {
+    userRole = "customer";
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
