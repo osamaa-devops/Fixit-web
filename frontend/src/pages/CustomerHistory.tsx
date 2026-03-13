@@ -53,12 +53,12 @@ export function CustomerHistory() {
 
       {/* Filter Tabs */}
       <div className="flex gap-2 flex-wrap mb-6">
-        {(['all', 'active', 'pending', 'completed', 'cancelled'] as const).map(f => (
-          <button key={f} onClick={() => setFilter(f)} className={clsx(
+        {(['all', 'active', 'pending', 'completed', 'cancelled'] as const).map((f: 'all' | ReqStatus) => (
+          <button key={f} onClick={() => setFilter(f as ReqStatus | 'all')} className={clsx(
             "px-5 py-2 rounded-xl font-extrabold text-[0.9rem] border transition-all",
             filter === f ? "bg-primary/10 text-primary border-primary/30" : "bg-white/60 text-text-secondary border-white/40 hover:bg-white hover:text-text-primary"
           )}>
-            {f === 'all' ? 'الكل' : STATUS_MAP[f].label}
+            {f === 'all' ? 'الكل' : STATUS_MAP[f as ReqStatus].label}
           </button>
         ))}
       </div>

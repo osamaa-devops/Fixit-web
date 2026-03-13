@@ -14,9 +14,13 @@ type JobCard = {
   status: 'new' | 'active' | 'completed' | 'cancelled';
 };
 
-function CopyAddressBtn({ address }: { address: string }) {
+interface CopyAddressProps {
+  address: string;
+}
+
+function CopyAddressBtn({ address }: CopyAddressProps) {
   const [copied, setCopied] = useState(false);
-  const handleCopy = (e: React.MouseEvent) => {
+  const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     navigator.clipboard.writeText(address);
     setCopied(true);
@@ -38,7 +42,7 @@ export function HandymanDashboard() {
   const { data: profile, isLoading: profileLoading } = useMyProfile();
   const { data: jobs = [], isLoading: jobsLoading } = useMyJobs();
 
-  const byStatus = (status: JobCard['status']) => jobs.filter(j => j.status === status);
+  const byStatus = (status: JobCard['status']) => jobs.filter((j: JobCard) => j.status === status);
 
   const isLoading = profileLoading || jobsLoading;
 

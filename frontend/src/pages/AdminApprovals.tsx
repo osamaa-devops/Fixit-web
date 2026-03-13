@@ -40,7 +40,7 @@ export function AdminApprovals() {
     );
   }
 
-  const Row = ({ a }: { a: Applicant }): JSX.Element => (
+  const Row: React.FC<{ a: Applicant }> = ({ a }) => (
     <tr className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
       <td className="px-6 py-4 font-mono font-extrabold text-blue-400 text-[0.85rem]">{a.id}</td>
       <td className="px-6 py-4">
@@ -122,7 +122,7 @@ export function AdminApprovals() {
                 </tr>
               </thead>
               <tbody>
-                {pending.map(a => <Row key={a.id} a={a}/>)}
+                {pending.map((a: Applicant) => <Row key={a.id} a={a}/>)}
               </tbody>
             </table>
           </div>
@@ -145,7 +145,7 @@ export function AdminApprovals() {
                 </tr>
               </thead>
               <tbody>
-                {reviewed.map(a => <Row key={a.id} a={a}/>)}
+                {reviewed.map((a: Applicant) => <Row key={a.id} a={a}/>)}
               </tbody>
             </table>
           </div>

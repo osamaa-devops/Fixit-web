@@ -56,11 +56,11 @@ export function AdminReviews() {
         </div>
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
           <AlertTriangle size={22} className="text-amber-400"/>
-          <div><div className="font-black text-[1.4rem] text-amber-400">{complaints.filter(c=>c.rating && c.rating<=2).length}</div><div className="text-[0.8rem] text-slate-400 font-bold">تقييمات منخفضة</div></div>
+          <div><div className="font-black text-[1.4rem] text-amber-400">{complaints.filter((c: ReviewItem)=>c.rating && c.rating<=2).length}</div><div className="text-[0.8rem] text-slate-400 font-bold">تقييمات منخفضة</div></div>
         </div>
         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
           <CheckCircle size={22} className="text-emerald-400"/>
-          <div><div className="font-black text-[1.4rem] text-emerald-400">{complaints.filter(c=>c.status==='resolved').length}</div><div className="text-[0.8rem] text-slate-400 font-bold">تمت معالجتها</div></div>
+          <div><div className="font-black text-[1.4rem] text-emerald-400">{complaints.filter((c: ReviewItem)=>c.status==='resolved').length}</div><div className="text-[0.8rem] text-slate-400 font-bold">تمت معالجتها</div></div>
         </div>
       </div>
 
