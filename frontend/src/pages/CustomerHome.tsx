@@ -97,8 +97,8 @@ export function CustomerHome() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {topHandymen.slice(0, 3).map(handyman => (
-                <HandymanCard key={handyman.id} handyman={handyman} />
+              {topHandymen.slice(0, 3).map((handyman: unknown) => (
+                <HandymanCard key={(handyman as { id: string }).id} handyman={handyman as never} />
               ))}
             </div>
           )}

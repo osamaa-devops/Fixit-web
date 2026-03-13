@@ -18,7 +18,7 @@ export function CustomerNotifications() {
   const markAsRead = useMarkNotificationAsRead();
 
   // Map API data to UI format
-  const notifications: Notification[] = notificationsData.map(n => ({
+  const notifications: Notification[] = notificationsData.map((n: Notification) => ({
     id: n.id,
     type: (n.type || 'status') as 'status' | 'success' | 'alert',
     text: n.content || n.text || '',
@@ -65,7 +65,7 @@ export function CustomerNotifications() {
         </div>
 
         <div className="flex flex-col">
-          {notifications.map((n, idx) => (
+          {notifications.map((n: Notification, idx: number) => (
             <div 
               key={n.id} 
               className={clsx(
@@ -103,7 +103,7 @@ export function CustomerNotifications() {
               )}
             </div>
           ))}
-          {NOTIFICATIONS.length === 0 && (
+          {notifications.length === 0 && (
             <div className="py-24 text-center flex flex-col items-center gap-4">
               <Bell size={64} className="text-slate-200" />
               <p className="text-slate-400 font-bold text-lg">لا توجد تنبيهات جديدة حالياً</p>

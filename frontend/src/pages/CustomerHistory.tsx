@@ -7,7 +7,7 @@ import { customerService } from '../services/customer.service';
 
 type ReqStatus = 'active' | 'completed' | 'cancelled' | 'pending';
 
-interface HistoryItem {
+interface HistoryItemData {
   id: string;
   title: string;
   handyman: string;
@@ -71,7 +71,7 @@ export function CustomerHistory() {
             <p className="font-extrabold text-text-secondary">لا توجد طلبات في هذه الفئة</p>
           </div>
         )}
-        {filtered.map((req, i) => {
+        {filtered.map((req: HistoryItemData, i: number) => {
           const s = STATUS_MAP[req.status];
           return (
             <div key={req.id} className="bg-white/70 backdrop-blur-[20px] rounded-[28px] p-6 md:p-8 border border-white/40 shadow-[0_10px_25px_rgba(0,0,0,0.05)] flex flex-col md:flex-row md:items-center gap-4 md:gap-6 transition-all hover:-translate-y-1 hover:bg-white hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] animate-fade-in-up"

@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { useComplaints, useResolveComplaint } from '../hooks/useAdmin';
 
 type ReviewStatus = 'pending' | 'resolved' | 'rejected';
-interface Review {
+interface ReviewItem {
   id: string; customerId?: string; handymanId?: string; rating?: number;
   content: string; submittedAt?: string; flagged?: boolean; status: ReviewStatus;
   title?: string;
@@ -23,8 +23,8 @@ export function AdminReviews() {
   const { data: complaints = [], isLoading } = useComplaints();
   const resolveComplaint = useResolveComplaint();
 
-  const flagged = complaints.filter(c => c.status === 'pending');
-  const filtered = complaints.filter(c => {
+  const flagged = complaints.filter((c: ReviewItem) => c.status === 'pending');
+  const filtered = complaints.filter((c: ReviewItem) => {
     if (filter === 'flagged') return c.status === 'pending';
     if (filter === 'pending') return c.status === 'pending';
     return true;
@@ -75,7 +75,7 @@ export function AdminReviews() {
 
       {/* Review Cards */}
       <div className="flex flex-col gap-4">
-        {filtered.map(rev => (
+        {filtered.map((rev: ReviewItem) => (
           <div key={rev.id} className={clsx("bg-white/5 border rounded-2xl p-6 transition-all", rev.status==='pending' ? "border-red-500/30" : "border-white/5")}>
             <div className="flex flex-col md:flex-row md:items-start gap-4">
               <div className="flex-1">

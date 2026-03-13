@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Users, Briefcase, Clock, Star, TrendingUp, CheckCircle, UserPlus, AlertTriangle } from 'lucide-react';
+import { Users, Briefcase, Clock, Star } from 'lucide-react';
 import { adminService } from '../services/admin.service';
 
 export function AdminDashboard() {

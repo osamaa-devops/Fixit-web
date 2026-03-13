@@ -40,7 +40,7 @@ export function AdminApprovals() {
     );
   }
 
-  const Row = ({ a }: { a: Applicant }) => (
+  const Row = ({ a }: { a: Applicant }): JSX.Element => (
     <tr className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
       <td className="px-6 py-4 font-mono font-extrabold text-blue-400 text-[0.85rem]">{a.id}</td>
       <td className="px-6 py-4">

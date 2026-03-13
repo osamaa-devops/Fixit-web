@@ -3,7 +3,7 @@ import { Clock, MapPin, Search, Filter, Eye, Loader } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useLiveRequests } from '../hooks/useAdmin';
 
-type ReqStatus = 'pending' | 'accepted' | 'active' | 'completed';
+type ReqStatus = 'pending' | 'accepted' | 'active' | 'completed' | 'cancelled';
 interface Request {
   id: string; customer: string; phone: string; handyman: string;
   specialty: string; location: string; time: string; status: ReqStatus;
@@ -14,9 +14,10 @@ const STATUS_STYLE: Record<ReqStatus, string> = {
   pending: 'bg-amber-500/10 text-amber-400',
   accepted: 'bg-blue-500/10 text-blue-400',
   completed: 'bg-blue-500/10 text-blue-400',
+  cancelled: 'bg-red-500/10 text-red-400',
 };
 const STATUS_LABEL: Record<ReqStatus, string> = {
-  active: 'قيد التنفيذ', pending: 'بانتظار فني', accepted: 'مقبول', completed: 'مكتمل',
+  active: 'قيد التنفيذ', pending: 'بانتظار فني', accepted: 'مقبول', completed: 'مكتمل', cancelled: 'ملغية',
 };
 
 export function AdminRequests() {
@@ -81,9 +82,9 @@ export function AdminRequests() {
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <Filter size={16} className="text-slate-400 shrink-0"/>
-          {(['all', 'active', 'pending', 'completed', 'cancelled'] as const).map(f => (
-            <button key={f} onClick={()=>setFilter(f)} className={clsx("px-4 py-2 rounded-xl text-[0.85rem] font-extrabold border transition-all", filter===f ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-white/5 text-slate-400 border-white/10 hover:bg-white/10")}>
-              {f==='all' ? 'الكل' : STATUS_LABEL[f]}
+          {(['all', 'active', 'pending', 'completed', 'cancelled'] as const).map((f: 'all' | ReqStatus) => (
+            <button key={f} onClick={()=>setFilter(f as ReqStatus | 'all')} className={clsx("px-4 py-2 rounded-xl text-[0.85rem] font-extrabold border transition-all", filter===f ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-white/5 text-slate-400 border-white/10 hover:bg-white/10")}>
+              {f==='all' ? 'الكل' : STATUS_LABEL[f as ReqStatus]}
             </button>
           ))}
         </div>

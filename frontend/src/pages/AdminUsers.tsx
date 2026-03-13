@@ -28,23 +28,21 @@ export function AdminUsers() {
 
   // Combine and format data
   const users: User[] = [
-    ...customerData.map(u => ({
+    ...customerData.map((u: User) => ({
       ...u,
-      name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'مستخدم',
       role: 'customer' as const,
       status: u.status || 'active' as const,
     })),
-    ...handymanData.map(u => ({
+    ...handymanData.map((u: User) => ({
       ...u,
-      name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'فني',
       role: 'handyman' as const,
       status: u.status || 'active' as const,
     })),
   ];
 
-  const filtered = users.filter(u => {
+  const filtered = users.filter((u: User) => {
     const matchType = filter === 'all' || u.role === filter;
-    const matchSearch = !search || (u.name?.includes(search) ?? false) || u.email.includes(search) || u.phone.includes(search);
+    const matchSearch = !search || u.email.includes(search) || u.phone.includes(search);
     return matchType && matchSearch;
   });
 
@@ -110,9 +108,9 @@ export function AdminUsers() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(user => (
+              {filtered.map((user: User) => (
                 <tr key={user.id} className="border-b border-[#e2e8f0] hover:bg-[#f8fafc]/50 transition-colors">
-                  <td className="px-6 py-4 font-black text-[#0f172a]">{user.name}</td>
+                  <td className="px-6 py-4 font-black text-[#0f172a]">{`${user.firstName || ''} ${user.lastName || ''}`.trim() || 'مستخدم'}</td>
                   <td className="px-6 py-4">
                     <div className="font-bold text-[0.95rem] direction-ltr text-right">{user.email}</div>
                     <div className="text-[0.85rem] text-[#64748b] font-bold direction-ltr text-right">{user.phone}</div>

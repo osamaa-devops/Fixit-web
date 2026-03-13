@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Copy, Check, Star } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 import { clsx } from 'clsx';
-import { handymanService } from '../services/handyman.service';
 import { useMyProfile, useMyJobs } from '../hooks/useHandyman';
 
 type JobCard = {
@@ -88,7 +86,7 @@ export function HandymanDashboard() {
             <span className="bg-white px-3 py-0.5 rounded-full text-[0.9rem] font-bold text-text-secondary border border-black/5">{byStatus('new').length}</span>
           </div>
           <div className="p-4 overflow-y-auto flex-1 flex flex-col gap-4" style={{ minHeight: 0 }}>
-            {byStatus('new').map((job, i) => (
+            {byStatus('new').map((job: JobCard, i: number) => (
               <div key={job.id} className="bg-white/85 rounded-[20px] p-5 border border-white/40 shadow-[0_10px_25px_rgba(0,0,0,0.05)] cursor-pointer transition-all hover:-translate-y-2 hover:scale-[1.02] hover:border-secondary hover:shadow-[0_20px_40px_rgba(77,184,168,0.15)] hover:bg-white"
                 style={{ animationDelay: `${i * 100}ms` }}>
                 <div className="flex justify-between items-start mb-3">
@@ -120,7 +118,7 @@ export function HandymanDashboard() {
             <span className="bg-white px-3 py-0.5 rounded-full text-[0.9rem] font-bold text-text-secondary border border-black/5">{byStatus('active').length}</span>
           </div>
           <div className="p-4 overflow-y-auto flex-1 flex flex-col gap-4" style={{ minHeight: 0 }}>
-            {byStatus('active').map(job => (
+            {byStatus('active').map((job: JobCard) => (
               <div key={job.id} className="bg-white/85 rounded-[20px] p-5 border-r-4 border-r-blue-400 border border-white/40 shadow-[0_10px_25px_rgba(0,0,0,0.05)] cursor-pointer transition-all hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(59,130,246,0.15)] hover:bg-white">
                 <div className="flex justify-between items-start mb-3">
                   <span className="text-[0.85rem] text-text-secondary font-mono font-bold">#{job.id}</span>
@@ -151,7 +149,7 @@ export function HandymanDashboard() {
             <span className="bg-white px-3 py-0.5 rounded-full text-[0.9rem] font-bold text-text-secondary border border-black/5">{byStatus('completed').length + byStatus('cancelled').length}</span>
           </div>
           <div className="p-4 overflow-y-auto flex-1 flex flex-col gap-4" style={{ minHeight: 0 }}>
-            {byStatus('completed').map(job => (
+            {byStatus('completed').map((job: JobCard) => (
               <div key={job.id} className="bg-white/85 rounded-[20px] p-5 opacity-80 border-r-4 border-r-emerald-400 border border-white/40 shadow-[0_10px_25px_rgba(0,0,0,0.05)] cursor-pointer transition-all hover:-translate-y-2 hover:opacity-100 hover:bg-white">
                 <div className="flex justify-between items-start mb-3">
                   <span className="text-[0.85rem] text-text-secondary font-mono font-bold">#{job.id}</span>
@@ -168,7 +166,7 @@ export function HandymanDashboard() {
                 </div>
               </div>
             ))}
-            {byStatus('cancelled').map(job => (
+            {byStatus('cancelled').map((job: JobCard) => (
               <div key={job.id} className="bg-white/85 rounded-[20px] p-5 opacity-60 border-r-4 border-r-red-400 border border-white/40 shadow-[0_10px_25px_rgba(0,0,0,0.05)] cursor-pointer transition-all hover:-translate-y-2 hover:opacity-100 hover:bg-white">
                  <div className="flex justify-between items-start mb-3">
                   <span className="text-[0.85rem] text-text-secondary font-mono font-bold">#{job.id}</span>
