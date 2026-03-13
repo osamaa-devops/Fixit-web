@@ -1,43 +1,59 @@
 import { useState } from 'react';
-import { Clock, MapPin, Search, Filter, Eye } from 'lucide-react';
+import { Clock, MapPin, Search, Filter, Eye, Loader } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useLiveRequests } from '../hooks/useAdmin';
 
-type ReqStatus = 'active' | 'pending' | 'completed' | 'cancelled';
+type ReqStatus = 'pending' | 'accepted' | 'active' | 'completed';
 interface Request {
   id: string; customer: string; phone: string; handyman: string;
-  specialty: string; district: string; time: string; status: ReqStatus;
+  specialty: string; location: string; time: string; status: ReqStatus;
 }
-
-const REQUESTS: Request[] = [
-  { id: 'FIX-2201', customer: 'كريم أحمد', phone: '010xxxxxxxx', handyman: 'محمد علي', specialty: 'سباكة', district: 'مدينة نصر', time: 'منذ 12 د', status: 'active' },
-  { id: 'FIX-2200', customer: 'سامي كمال', phone: '011xxxxxxxx', handyman: 'فيصل كمال', specialty: 'كهرباء', district: 'حلوان', time: 'منذ 35 د', status: 'active' },
-  { id: 'FIX-2199', customer: 'نورا منصور', phone: '012xxxxxxxx', handyman: 'بانتظار فني', specialty: 'سباكة', district: 'التجمع الخامس', time: 'منذ 50 د', status: 'pending' },
-  { id: 'FIX-2198', customer: 'طارق سعيد', phone: '010xxxxxxxx', handyman: 'أحمد خالد', specialty: 'سباكة', district: 'مصر الجديدة', time: 'منذ 1 س', status: 'active' },
-  { id: 'FIX-2197', customer: 'هند إبراهيم', phone: '015xxxxxxxx', handyman: 'سعيد محمود', specialty: 'نجارة', district: 'الدقي', time: 'منذ 2 س', status: 'completed' },
-  { id: 'FIX-2195', customer: 'رامي عمر', phone: '011xxxxxxxx', handyman: 'خالد سيد', specialty: 'تكييف', district: 'المهندسين', time: 'منذ 3 س', status: 'cancelled' },
-];
 
 const STATUS_STYLE: Record<ReqStatus, string> = {
   active: 'bg-emerald-500/10 text-emerald-400',
   pending: 'bg-amber-500/10 text-amber-400',
+  accepted: 'bg-blue-500/10 text-blue-400',
   completed: 'bg-blue-500/10 text-blue-400',
-  cancelled: 'bg-red-500/10 text-red-400',
 };
 const STATUS_LABEL: Record<ReqStatus, string> = {
-  active: 'قيد التنفيذ', pending: 'بانتظار فني', completed: 'مكتمل', cancelled: 'ملغي',
+  active: 'قيد التنفيذ', pending: 'بانتظار فني', accepted: 'مقبول', completed: 'مكتمل',
 };
 
 export function AdminRequests() {
+  const { data: liveRequests = [], isLoading } = useLiveRequests();
   const [filter, setFilter] = useState<ReqStatus | 'all'>('all');
   const [search, setSearch] = useState('');
 
-  const filtered = REQUESTS.filter(r => {
+  // Map API data to UI format
+  const requests: Request[] = liveRequests.map(r => ({
+    id: r.id,
+    customer: 'عميل #' + r.customerId.slice(-4), // Will be improved when API provides full customer data
+    phone: 'N/A', // Will be available when API provides full customer data
+    handyman: r.handymanId ? 'فني #' + r.handymanId.slice(-4) : 'بانتظار فني',
+    specialty: r.category,
+    location: r.location,
+    time: new Date(r.createdAt).toLocaleDateString('ar-EG'),
+    status: r.status as ReqStatus,
+  }));
+
+  const filtered = requests.filter(r => {
     const matchStatus = filter === 'all' || r.status === filter;
     const matchSearch = !search || r.id.includes(search) || r.customer.includes(search) || r.handyman.includes(search);
     return matchStatus && matchSearch;
   });
 
-  const counts = { active: REQUESTS.filter(r=>r.status==='active').length, pending: REQUESTS.filter(r=>r.status==='pending').length };
+  const counts = { active: requests.filter(r=>r.status==='active').length, pending: requests.filter(r=>r.status==='pending').length };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center text-white">
+        <div className="text-center">
+          <Loader size={40} className="animate-spin mx-auto mb-4" />
+          <p>جاري تحميل الطلبات...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0b0f19] p-8 text-white font-sans animate-fade-in-up">
@@ -53,7 +69,7 @@ export function AdminRequests() {
           <div><div className="font-black text-[1.4rem] text-amber-400">{counts.pending}</div><div className="text-[0.8rem] text-slate-400 font-bold">بانتظار فني</div></div>
         </div>
         <div className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 flex items-center gap-3">
-          <div><div className="font-black text-[1.4rem]">{REQUESTS.length}</div><div className="text-[0.8rem] text-slate-400 font-bold">إجمالي اليوم</div></div>
+          <div><div className="font-black text-[1.4rem]">{requests.length}</div><div className="text-[0.8rem] text-slate-400 font-bold">إجمالي</div></div>
         </div>
       </div>
 
@@ -78,7 +94,7 @@ export function AdminRequests() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr>{['رقم الطلب','العميل','الفني','التخصص','المنطقة','الوقت','الحالة','إجراء'].map(h=>(
+              <tr>{['رقم الطلب','العميل','الفني','التخصص','الموقع','التاريخ','الحالة','إجراء'].map(h=>(
                 <th key={h} className="text-right px-5 py-4 text-[0.8rem] text-slate-400 border-b border-white/5 bg-white/[0.02] font-bold">{h}</th>
               ))}</tr>
             </thead>
@@ -89,7 +105,7 @@ export function AdminRequests() {
                   <td className="px-5 py-4"><div className="font-extrabold">{r.customer}</div><div className="text-[0.75rem] text-slate-400 font-bold">{r.phone}</div></td>
                   <td className="px-5 py-4 font-bold text-slate-300">{r.handyman}</td>
                   <td className="px-5 py-4 font-bold text-slate-300">{r.specialty}</td>
-                  <td className="px-5 py-4 font-bold text-slate-300 flex items-center gap-1.5"><MapPin size={12}/>{r.district}</td>
+                  <td className="px-5 py-4 font-bold text-slate-300 flex items-center gap-1.5"><MapPin size={12}/>{r.location}</td>
                   <td className="px-5 py-4 text-[0.8rem] text-slate-400 font-bold">{r.time}</td>
                   <td className="px-5 py-4"><span className={clsx("px-3 py-1 rounded-full text-[0.8rem] font-extrabold", STATUS_STYLE[r.status])}>{STATUS_LABEL[r.status]}</span></td>
                   <td className="px-5 py-4"><button className="flex items-center gap-1.5 px-3 py-2 bg-white/5 text-slate-400 rounded-xl text-[0.85rem] font-bold hover:bg-white/10 transition-all"><Eye size={14}/> عرض</button></td>

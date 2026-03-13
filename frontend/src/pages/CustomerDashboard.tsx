@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HelpCircle, LogOut, Clock, CheckCircle, Search, History, User } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useLogout } from '../hooks/useAuth';
 
 interface RequestItemProps {
   title: string;
@@ -16,6 +17,17 @@ interface RequestItemProps {
 
 // Extracted from web-customer-dashboard.html
 export function CustomerDashboard() {
+  const navigate = useNavigate();
+  const { mutate: logout } = useLogout();
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate('/login');
+      },
+    });
+  };
+
   return (
     <div className="w-[95%] max-w-[1400px] mx-auto mt-10 mb-20 flex flex-col lg:flex-row gap-8 font-sans text-text-primary fade-in-up">
       
@@ -62,7 +74,7 @@ export function CustomerDashboard() {
             </Link>
           </li>
           <li className="mt-5">
-            <button className="w-full flex items-center gap-3.5 p-4 rounded-2xl text-red-500 font-extrabold border border-transparent transition-all hover:bg-red-50 hover:-translate-x-1 outline-none text-right cursor-pointer">
+            <button onClick={handleLogout} className="w-full flex items-center gap-3.5 p-4 rounded-2xl text-red-500 font-extrabold border border-transparent transition-all hover:bg-red-50 hover:-translate-x-1 outline-none text-right cursor-pointer">
               <LogOut size={20} strokeWidth={2.5} />
               تسجيل الخروج
             </button>

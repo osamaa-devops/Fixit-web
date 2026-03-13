@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminService } from '../services/admin.service';
 
 export const useDashboardStats = () => {
@@ -18,16 +18,32 @@ export const usePendingHandymen = () => {
 };
 
 export const useApproveHandyman = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: { handymanId: string; reason?: string }) =>
       adminService.approveHandyman(data.handymanId, data.reason),
+    onSuccess: () => {
+      // Invalidate pending handymen and dashboard stats caches
+      queryClient.invalidateQueries({ queryKey: ['pendingHandymen'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
+      queryClient.invalidateQueries({ queryKey: ['adminDashboardStats'] });
+    },
   });
 };
 
 export const useRejectHandyman = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: { handymanId: string; reason: string }) =>
       adminService.rejectHandyman(data.handymanId, data.reason),
+    onSuccess: () => {
+      // Invalidate pending handymen and dashboard stats caches
+      queryClient.invalidateQueries({ queryKey: ['pendingHandymen'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
+      queryClient.invalidateQueries({ queryKey: ['adminDashboardStats'] });
+    },
   });
 };
 
@@ -40,17 +56,29 @@ export const useCategories = () => {
 };
 
 export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (data: any) => adminService.createCategory(data),
+    onSuccess: () => {
+      // Invalidate categories cache
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
   });
 };
 
 export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (data: { categoryId: string; updates: any }) =>
       adminService.updateCategory(data.categoryId, data.updates),
+    onSuccess: () => {
+      // Invalidate categories cache
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
   });
 };
 

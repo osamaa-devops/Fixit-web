@@ -1,8 +1,9 @@
 
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, Menu, Settings, Bell } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useState } from 'react';
+import { useLogout } from '../../hooks/useAuth';
 
 const MENU_ITEMS = [
   { path: '/admin/dashboard', label: 'لوحة التحكم', icon: '📊' },
@@ -15,7 +16,17 @@ const MENU_ITEMS = [
 
 export function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { mutate: logout } = useLogout();
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate('/login');
+      },
+    });
+  };
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]/50 font-sans">
@@ -55,7 +66,7 @@ export function AdminLayout() {
 
         {/* Sidebar Footer */}
         <div className="border-t border-white/10 p-4">
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-all text-[0.9rem] font-bold">
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-all text-[0.9rem] font-bold">
             <LogOut size={18} /> تسجيل الخروج
           </button>
         </div>

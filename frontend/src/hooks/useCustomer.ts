@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCustomerStore } from '../store/customerStore';
 import type { BookingData, CustomerProfile, ServiceRequest } from '../services/customer.service';
 import { customerService } from '../services/customer.service';
@@ -12,8 +12,14 @@ export const useCustomerProfile = () => {
 };
 
 export const useUpdateCustomerProfile = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: Partial<CustomerProfile>) => customerService.updateProfile(data),
+    onSuccess: () => {
+      // Invalidate profile cache after successful update
+      queryClient.invalidateQueries({ queryKey: ['customerProfile'] });
+    },
   });
 };
 
@@ -44,17 +50,22 @@ export const useRequestDetails = (requestId: string) => {
 };
 
 export const useCreateRequest = () => {
+  const queryClient = useQueryClient();
   const { addRequest } = useCustomerStore();
 
   return useMutation({
     mutationFn: (data: BookingData) => customerService.createRequest(data),
     onSuccess: (data) => {
       addRequest(data);
+      // Invalidate request history to reflect new request
+      queryClient.invalidateQueries({ queryKey: ['requestHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['customerHistory'] });
     },
   });
 };
 
 export const useCancelRequest = () => {
+  const queryClient = useQueryClient();
   const { updateRequest } = useCustomerStore();
 
   return useMutation({
@@ -62,6 +73,10 @@ export const useCancelRequest = () => {
       customerService.cancelRequest(data.requestId, data.reason),
     onSuccess: (data) => {
       updateRequest(data.id, { status: 'cancelled' });
+      // Invalidate related caches
+      queryClient.invalidateQueries({ queryKey: ['requestHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['customerHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['request', data.id] });
     },
   });
 };
@@ -76,12 +91,20 @@ export const useTrackRequest = (requestId: string) => {
 };
 
 export const useRateRequest = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: {
       requestId: string;
       rating: number;
       review: string;
     }) => customerService.rateRequest(data.requestId, data.rating, data.review),
+    onSuccess: (_, variables) => {
+      // Invalidate request details and history
+      queryClient.invalidateQueries({ queryKey: ['request', variables.requestId] });
+      queryClient.invalidateQueries({ queryKey: ['requestHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['customerHistory'] });
+    },
   });
 };
 
@@ -94,9 +117,15 @@ export const useNotifications = () => {
 };
 
 export const useMarkNotificationAsRead = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (notificationId: string) =>
       customerService.markNotificationAsRead(notificationId),
+    onSuccess: () => {
+      // Invalidate notifications cache
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 };
 

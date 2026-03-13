@@ -1,6 +1,14 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useHandymanStore } from '../store/handymanStore';
 import { handymanService } from '../services/handyman.service';
+
+export const useMyProfile = () => {
+  return useQuery({
+    queryKey: ['myHandymanProfile'],
+    queryFn: () => handymanService.getMyProfile(),
+    staleTime: 1000 * 60 * 10, // 10 minutes
+  });
+};
 
 export const useHandymanProfile = (handymanId?: string) => {
   return useQuery({
@@ -40,28 +48,37 @@ export const useMyJobs = (status?: string) => {
 };
 
 export const useAcceptJob = () => {
+  const queryClient = useQueryClient();
   const { updateJob } = useHandymanStore();
 
   return useMutation({
     mutationFn: (jobId: string) => handymanService.acceptJob(jobId),
     onSuccess: (data) => {
       updateJob(data.id, { status: 'accepted' });
+      // Invalidate jobs cache to reflect status change
+      queryClient.invalidateQueries({ queryKey: ['myJobs'] });
+      queryClient.invalidateQueries({ queryKey: ['handymanJobs'] });
     },
   });
 };
 
 export const useCompleteJob = () => {
+  const queryClient = useQueryClient();
   const { updateJob } = useHandymanStore();
 
   return useMutation({
     mutationFn: (jobId: string) => handymanService.completeJob(jobId),
     onSuccess: (data) => {
       updateJob(data.id, { status: 'completed' });
+      // Invalidate jobs cache to reflect status change
+      queryClient.invalidateQueries({ queryKey: ['myJobs'] });
+      queryClient.invalidateQueries({ queryKey: ['handymanJobs'] });
     },
   });
 };
 
 export const useCancelJob = () => {
+  const queryClient = useQueryClient();
   const { updateJob } = useHandymanStore();
 
   return useMutation({
@@ -69,6 +86,9 @@ export const useCancelJob = () => {
       handymanService.cancelJob(data.jobId, data.reason),
     onSuccess: (data) => {
       updateJob(data.id, { status: 'cancelled' });
+      // Invalidate jobs cache to reflect status change
+      queryClient.invalidateQueries({ queryKey: ['myJobs'] });
+      queryClient.invalidateQueries({ queryKey: ['handymanJobs'] });
     },
   });
 };

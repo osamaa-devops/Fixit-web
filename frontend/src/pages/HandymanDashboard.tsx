@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Copy, Check, Star } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { clsx } from 'clsx';
+import { handymanService } from '../services/handyman.service';
+import { useMyProfile, useMyJobs } from '../hooks/useHandyman';
 
 type JobCard = {
   id: string;
@@ -12,34 +15,6 @@ type JobCard = {
   timeLabel: string;
   status: 'new' | 'active' | 'completed' | 'cancelled';
 };
-
-const MOCK_JOBS: JobCard[] = [
-  {
-    id: 'FIX-2201', title: 'تغيير خلاط مياه وتصليح تسريب', customer: 'كريم أحمد',
-    district: 'مدينة نصر', complexity: 'صيانة خفيفة 🛠️', address: 'مكرم عبيد، عمارة 4، شقة 10',
-    timeLabel: 'منذ 15 دقيقة', status: 'new'
-  },
-  {
-    id: 'FIX-2204', title: 'تأسيس سباكة لحمام جديد', customer: 'حسام محمود',
-    district: 'التجمع الخامس', complexity: 'تأسيس كامل 🏗️', address: 'حي الياسمين، فيلا 12ب',
-    timeLabel: 'منذ ساعة', status: 'new'
-  },
-  {
-    id: 'FIX-2198', title: 'تصليح ماتور المياه', customer: 'طارق سعيد',
-    district: 'مصر الجديدة', complexity: 'إصلاح ميكانيكي ⚙️', address: 'شارع الثورة، بجوار كنتاكي',
-    timeLabel: 'تعمل عليه الآن', status: 'active'
-  },
-  {
-    id: 'FIX-2150', title: 'تركيب سخان غاز', customer: 'سارة أحمد',
-    district: 'الدقي', complexity: 'تركيب جديد 🔧', address: 'شارع التحرير',
-    timeLabel: 'تم الدفع نقداً', status: 'completed'
-  },
-  {
-    id: 'FIX-2142', title: 'صيانة طلمبة مياه', customer: 'علي رضا',
-    district: 'شبرا', complexity: 'صيانة 🛠️', address: 'شارع الملك فيصل',
-    timeLabel: 'تم الإلغاء', status: 'cancelled'
-  }
-];
 
 function CopyAddressBtn({ address }: { address: string }) {
   const [copied, setCopied] = useState(false);
@@ -61,7 +36,24 @@ function CopyAddressBtn({ address }: { address: string }) {
 }
 
 export function HandymanDashboard() {
-  const byStatus = (status: JobCard['status']) => MOCK_JOBS.filter(j => j.status === status);
+  // Fetch current handyman profile and jobs from API
+  const { data: profile, isLoading: profileLoading } = useMyProfile();
+  const { data: jobs = [], isLoading: jobsLoading } = useMyJobs();
+
+  const byStatus = (status: JobCard['status']) => jobs.filter(j => j.status === status);
+
+  const isLoading = profileLoading || jobsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] font-sans text-text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border border-secondary/20 border-t-secondary mx-auto mb-4"></div>
+          <p className="text-text-secondary">جاري تحميل المهام والملف الشخصي...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdfbfb] to-[#e2e8f0] font-sans text-text-primary flex flex-col overflow-hidden animate-fade-in-up">
@@ -70,12 +62,12 @@ export function HandymanDashboard() {
       {/* Performance Bar */}
       <div className="bg-white/40 backdrop-blur-[15px] border-b border-black/5 flex justify-center z-10 px-5 py-2 shrink-0">
         <div className="w-full max-w-[1400px] flex flex-col md:flex-row md:items-center justify-between gap-3 px-10">
-          <h1 className="text-[1.2rem] font-black m-0">مرحباً محمد، إليك جدول أعمالك اليوم</h1>
+          <h1 className="text-[1.2rem] font-black m-0">مرحباً {profile?.firstName}, إليك جدول أعمالك اليوم</h1>
           <div className="flex gap-3 flex-wrap">
             {[
-              { val: '3', lbl: 'مهام اليوم' },
-              { val: '4,250 ج.م', lbl: 'الإيرادات' },
-              { val: '★ 4.9', lbl: 'التقييم', gold: true }
+              { val: jobs.length.toString(), lbl: 'مهام اليوم' },
+              { val: '0 ج.م', lbl: 'الإيرادات' }, // Will be updated from API
+              { val: `★ ${profile?.rating?.toFixed(1) || '0.0'}`, lbl: 'التقييم', gold: true }
             ].map((s) => (
               <div key={s.lbl} className="bg-white px-4 py-1.5 rounded-xl border border-black/5 flex items-center gap-2 shadow-[0_4px_10px_rgba(0,0,0,0.03)] transition-all hover:-translate-y-0.5 hover:border-secondary">
                 <span className={clsx("font-black text-[0.95rem]", s.gold ? "text-amber-400" : "text-secondary")}>{s.val}</span>

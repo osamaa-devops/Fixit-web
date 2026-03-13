@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, Star, Clock, Bell, Lock, LogOut, Save } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useLogout } from '../hooks/useAuth';
 
 type Tab = 'personal' | 'work' | 'hours' | 'notifications' | 'security';
 
@@ -15,9 +17,19 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 const DAYS = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
 
 export function HandymanSettings() {
+  const navigate = useNavigate();
+  const { mutate: logout } = useLogout();
   const [activeTab, setActiveTab] = useState<Tab>('personal');
   const [selectedDays, setSelectedDays] = useState(['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء']);
   const [notifs, setNotifs] = useState({ requests: true, messages: true, reviews: true, promos: false });
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate('/login');
+      },
+    });
+  };
 
   const toggleDay = (day: string) => {
     setSelectedDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
@@ -43,7 +55,7 @@ export function HandymanSettings() {
               {tab.icon} {tab.label}
             </button>
           ))}
-          <button className="flex items-center gap-3 w-max md:w-full text-right px-6 py-4 bg-transparent border-none text-red-500 text-[1.05rem] font-extrabold cursor-pointer transition-all md:mt-auto hover:bg-red-50">
+          <button onClick={handleLogout} className="flex items-center gap-3 w-max md:w-full text-right px-6 py-4 bg-transparent border-none text-red-500 text-[1.05rem] font-extrabold cursor-pointer transition-all md:mt-auto hover:bg-red-50">
             <LogOut size={20} strokeWidth={2.5}/> تسجيل الخروج
           </button>
         </aside>

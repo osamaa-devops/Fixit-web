@@ -40,7 +40,7 @@ export function HandymanLogin() {
               <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-[#94a3b8]" size={20} />
               <input 
                 type="tel" 
-                placeholder="+966 50 123 4567" 
+                placeholder="+20 500 123 4567" 
                 required 
                 dir="ltr"
                 className="w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-xl py-4 px-4 pr-12 text-[#1a202c] font-bold outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 transition-all placeholder:text-[#cbd5e1]"

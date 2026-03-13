@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Clock, CheckCircle, XCircle, MapPin, Star } from 'lucide-react';
 import { clsx } from 'clsx';
+import { customerService } from '../services/customer.service';
 
 type ReqStatus = 'active' | 'completed' | 'cancelled' | 'pending';
 
@@ -16,14 +18,6 @@ interface HistoryItem {
   canReview: boolean;
 }
 
-const HISTORY: HistoryItem[] = [
-  { id: 'FIX-2201', title: 'تغيير خلاط مياه وتصليح تسريب', handyman: 'محمد علي سعيد', handymanRating: 4.9, date: 'اليوم، 3:30 م', district: 'مدينة نصر', status: 'active', canReview: false },
-  { id: 'FIX-2150', title: 'تركيب سخان غاز', handyman: 'خالد سيد', handymanRating: 4.7, date: 'أمس، 11:00 ص', district: 'الدقي', status: 'completed', canReview: true },
-  { id: 'FIX-2142', title: 'صيانة طلمبة مياه', handyman: 'سعيد محمود', handymanRating: 4.5, date: '2 يناير 2024', district: 'شبرا', status: 'cancelled', canReview: false },
-  { id: 'FIX-2130', title: 'تأسيس سباكة حمام جديد', handyman: 'عمرو حسن', handymanRating: 4.8, date: '25 ديسمبر 2023', district: 'مصر الجديدة', status: 'completed', canReview: false },
-  { id: 'FIX-2119', title: 'تصليح حنفية المطبخ', handyman: 'يوسف كمال', handymanRating: 4.6, date: '10 ديسمبر 2023', district: 'المهندسين', status: 'completed', canReview: false },
-];
-
 const STATUS_MAP: Record<ReqStatus, { label: string; cls: string; icon: React.ReactNode }> = {
   active: { label: 'جارٍ الآن', cls: 'bg-blue-500/10 text-blue-500', icon: <Clock size={13}/> },
   pending: { label: 'بانتظار فني', cls: 'bg-amber-500/10 text-amber-500', icon: <Clock size={13}/> },
@@ -33,8 +27,23 @@ const STATUS_MAP: Record<ReqStatus, { label: string; cls: string; icon: React.Re
 
 export function CustomerHistory() {
   const [filter, setFilter] = useState<ReqStatus | 'all'>('all');
+  
+  // Fetch request history from API
+  const { data: history = [], isLoading } = useQuery({
+    queryKey: ['customerHistory', filter],
+    queryFn: () => customerService.getRequestHistory(100, 0, filter === 'all' ? undefined : filter),
+  });
 
-  const filtered = filter === 'all' ? HISTORY : HISTORY.filter(r => r.status === filter);
+  if (isLoading) {
+    return (
+      <div className="w-[95%] max-w-[900px] mx-auto mt-10 mb-20 font-sans text-text-primary fade-in-up text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border border-secondary/20 border-t-secondary mx-auto mb-4"></div>
+        <p className="text-text-secondary">جاري تحميل طلباتك...</p>
+      </div>
+    );
+  }
+
+  const filtered = filter === 'all' ? history : history.filter(r => r.status === filter);
 
   return (
     <div className="w-[95%] max-w-[900px] mx-auto mt-10 mb-20 font-sans text-text-primary fade-in-up">

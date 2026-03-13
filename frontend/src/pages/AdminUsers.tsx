@@ -1,34 +1,63 @@
 import { useState } from 'react';
-import { Search, UserPlus, MoreHorizontal, Ban, Eye, CheckCircle } from 'lucide-react';
+import { Search, UserPlus, MoreHorizontal, Ban, Eye, CheckCircle, Loader } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useAllUsers } from '../hooks/useAdmin';
 
 interface User {
   id: string;
-  name: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   phone: string;
   role: 'customer' | 'handyman' | 'admin';
-  joinDate: string;
+  memberSince?: string;
+  createdAt?: string;
   status: 'active' | 'blocked';
   verified?: boolean;
 }
 
-const USERS: User[] = [
-  { id: '1', name: 'عمر خالد', email: 'omar@email.com', phone: '01099998888', role: 'customer', joinDate: '12 أكتوبر 2024', status: 'active' },
-  { id: '2', name: 'محمد علي (سباك)', email: 'm.aly@handyman.com', phone: '01233334444', role: 'handyman', joinDate: '5 نوفمبر 2024', status: 'active', verified: true },
-  { id: '3', name: 'إدارة النظام', email: 'admin@fixit.com', phone: '', role: 'admin', joinDate: '1 يناير 2024', status: 'active' },
-  { id: '4', name: 'أحمد محمود', email: 'ahmed@email.com', phone: '01511112222', role: 'customer', joinDate: '20 ديسمبر 2024', status: 'blocked' },
-];
-
 export function AdminUsers() {
   const [filter, setFilter] = useState<'all' | 'customer' | 'handyman'>('all');
   const [search, setSearch] = useState('');
+  
+  // Fetch both customers and handymen
+  const { data: customerData = [], isLoading: customersLoading } = useAllUsers(filter === 'all' ? 'customer' : filter === 'customer' ? 'customer' : undefined);
+  const { data: handymanData = [], isLoading: handymansLoading } = useAllUsers(filter === 'all' ? 'handyman' : filter === 'handyman' ? 'handyman' : undefined);
 
-  const filtered = USERS.filter(u => {
+  const isLoading = customersLoading || handymansLoading;
+
+  // Combine and format data
+  const users: User[] = [
+    ...customerData.map(u => ({
+      ...u,
+      name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'مستخدم',
+      role: 'customer' as const,
+      status: u.status || 'active' as const,
+    })),
+    ...handymanData.map(u => ({
+      ...u,
+      name: `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'فني',
+      role: 'handyman' as const,
+      status: u.status || 'active' as const,
+    })),
+  ];
+
+  const filtered = users.filter(u => {
     const matchType = filter === 'all' || u.role === filter;
-    const matchSearch = u.name.includes(search) || u.email.includes(search) || u.phone.includes(search);
+    const matchSearch = !search || (u.name?.includes(search) ?? false) || u.email.includes(search) || u.phone.includes(search);
     return matchType && matchSearch;
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] flex items-center justify-center">
+        <div className="text-center">
+          <Loader size={40} className="animate-spin mx-auto mb-4 text-blue-500" />
+          <p className="text-[#64748b] font-bold">جاري تحميل المستخدمين...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] p-8 font-sans animate-fade-in-up">
@@ -98,7 +127,7 @@ export function AdminUsers() {
                       {user.role === 'customer' ? 'عميل' : user.role === 'handyman' ? `فني ${user.verified ? '(مُعتمد)' : ''}` : 'مدير نظام'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 font-bold text-[#64748b]">{user.joinDate}</td>
+                  <td className="px-6 py-4 font-bold text-[#64748b]">{user.memberSince?.split('T')[0] || user.createdAt?.split('T')[0] || 'N/A'}</td>
                   <td className="px-6 py-4">
                     <span className={clsx(
                       "font-black text-[0.95rem]",

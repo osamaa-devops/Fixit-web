@@ -1,37 +1,15 @@
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { HandymanCard } from '../components/shared/HandymanCard';
-
-const TOP_HANDYMEN = [
-  {
-    id: '1',
-    name: 'محمد علي سعيد',
-    category: 'متخصص سباكة وتأسيس',
-    rating: 4.9,
-    reviewsCount: 124,
-    isAvailable: true,
-    avatar: 'https://i.pravatar.cc/150?u=1'
-  },
-  {
-    id: '2',
-    name: 'أحمد حسن جلال',
-    category: 'كهربائي منازل محترف',
-    rating: 4.8,
-    reviewsCount: 85,
-    isAvailable: true,
-    avatar: 'https://i.pravatar.cc/150?u=2'
-  },
-  {
-    id: '3',
-    name: 'سيد إبراهيم خليل',
-    category: 'نجار موبيليا وتصليحات',
-    rating: 4.7,
-    reviewsCount: 210,
-    isAvailable: false,
-    avatar: 'https://i.pravatar.cc/150?u=3'
-  }
-];
+import { handymanService } from '../services/handyman.service';
 
 export function CustomerHome() {
+  // Fetch top-rated handymen from API
+  const { data: topHandymen = [], isLoading } = useQuery({
+    queryKey: ['topHandymen'],
+    queryFn: () => handymanService.searchHandymen({ minRating: 4.5, available: true }),
+  });
+
   return (
     <div className="pt-8 pb-20 fade-in-up">
       
@@ -112,11 +90,18 @@ export function CustomerHome() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {TOP_HANDYMEN.map(handyman => (
-              <HandymanCard key={handyman.id} handyman={handyman} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border border-primary/20 border-t-primary mx-auto mb-4"></div>
+              <p className="text-text-secondary">جاري تحميل الفنيين...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {topHandymen.slice(0, 3).map(handyman => (
+                <HandymanCard key={handyman.id} handyman={handyman} />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* How it works */}

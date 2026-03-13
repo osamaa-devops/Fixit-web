@@ -1,37 +1,71 @@
-import { Bell, Clock, Info, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Bell, Clock, Info, CheckCircle, AlertTriangle, Loader } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useNotifications, useMarkNotificationAsRead } from '../hooks/useCustomer';
 
 interface Notification {
-  id: number;
-  type: 'status' | 'success' | 'alert';
-  text: string;
-  time: string;
-  unread: boolean;
+  id: string;
+  type?: 'status' | 'success' | 'alert';
+  content?: string;
+  text?: string;
+  createdAt?: string;
+  time?: string;
+  read?: boolean;
+  unread?: boolean;
 }
 
-const NOTIFICATIONS: Notification[] = [
-  { id: 1, type: 'status', text: 'الفني محمد علي في طريقه الآن لموقعك لطلب السباكة رقم #FIX-9824.', time: 'منذ دقيقة واحدة', unread: true },
-  { id: 2, type: 'success', text: 'تم قبول طلب الدهانات بنجاح! طارق حسن جاهز لبدء العمل في الموعد المحدد.', time: 'منذ ساعتين', unread: true },
-  { id: 3, type: 'alert', text: 'قيم تجربتك الأخيرة! رأيك يهمنا ويساعدنا في اختيار أفضل الفنيين لمنصتنا.', time: 'منذ يومين', unread: false },
-  { id: 4, type: 'success', text: 'تم تحويل مبلغ التامين بنجاح لمحفظتك الإلكترونية الخاصة بطلب "فك وتركيب التكيف".', time: 'منذ 3 أيام', unread: false },
-];
-
 export function CustomerNotifications() {
+  const { data: notificationsData = [], isLoading } = useNotifications();
+  const markAsRead = useMarkNotificationAsRead();
+
+  // Map API data to UI format
+  const notifications: Notification[] = notificationsData.map(n => ({
+    id: n.id,
+    type: (n.type || 'status') as 'status' | 'success' | 'alert',
+    text: n.content || n.text || '',
+    unread: !n.read,
+    time: n.createdAt ? new Date(n.createdAt).toLocaleDateString('ar-EG') : n.time || '',
+  }));
+
+  const unreadCount = notifications.filter(n => n.unread).length;
+
+  const handleMarkAsRead = (id: string) => {
+    markAsRead.mutate(id);
+  };
+
+  const handleMarkAllAsRead = () => {
+    notifications.filter(n => n.unread).forEach(n => {
+      markAsRead.mutate(n.id);
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-[850px] mx-auto p-4 md:p-8 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader size={40} className="animate-spin mx-auto mb-4 text-[#FF6B35]" />
+          <p className="text-slate-600 font-bold">جاري تحميل الإشعارات...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[850px] mx-auto p-4 md:p-8 animate-fade-in-up">
       <div className="bg-white/70 backdrop-blur-[25px] border border-white/40 rounded-[32px] shadow-2xl overflow-hidden">
         <div className="p-8 md:p-10 border-b-2 border-black/5 flex justify-between items-center flex-wrap gap-4 bg-white/30">
           <h1 className="text-[1.8rem] font-black m-0 flex items-center gap-4">
             إشعاراتي
-            <span className="text-[1.2rem] bg-[#FF6B35] text-white px-3 py-1 rounded-xl font-black shadow-lg shadow-[#FF6B35]/20">2 جديدة</span>
+            {unreadCount > 0 && <span className="text-[1.2rem] bg-[#FF6B35] text-white px-3 py-1 rounded-xl font-black shadow-lg shadow-[#FF6B35]/20">{unreadCount} جديدة</span>}
           </h1>
-          <button className="px-5 py-2.5 bg-[#FF6B35]/10 text-[#FF6B35] rounded-2xl font-black text-[1rem] hover:bg-[#FF6B35] hover:text-white hover:-translate-y-0.5 transition-all">
-            تحديد الكل كمقروء
-          </button>
+          {unreadCount > 0 && (
+            <button onClick={handleMarkAllAsRead} className="px-5 py-2.5 bg-[#FF6B35]/10 text-[#FF6B35] rounded-2xl font-black text-[1rem] hover:bg-[#FF6B35] hover:text-white hover:-translate-y-0.5 transition-all">
+              تحديد الكل كمقروء
+            </button>
+          )}
         </div>
 
         <div className="flex flex-col">
-          {NOTIFICATIONS.map((n, idx) => (
+          {notifications.map((n, idx) => (
             <div 
               key={n.id} 
               className={clsx(
@@ -39,6 +73,7 @@ export function CustomerNotifications() {
                 n.unread && "bg-[#FF6B35]/03 border-r-4 border-r-[#FF6B35]"
               )}
               style={{ animationDelay: `${idx * 0.1}s` }}
+              onClick={() => n.unread && handleMarkAsRead(n.id)}
             >
               <div className={clsx(
                 "w-14 h-14 rounded-[18px] flex items-center justify-center shrink-0 shadow-sm border border-black/5 transition-transform group-hover:rotate-[-5deg] group-hover:scale-110",

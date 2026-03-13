@@ -1,46 +1,62 @@
-import { CheckCircle, Clock, UserPlus, XCircle, Eye } from 'lucide-react';
+import { CheckCircle, Clock, UserPlus, XCircle, Eye, Loader } from 'lucide-react';
+import { usePendingHandymen, useApproveHandyman, useRejectHandyman } from '../hooks/useAdmin';
 
 interface Applicant {
   id: string;
-  name: string;
-  specialty: string;
-  district: string;
-  experience: string;
+  firstName?: string;
+  lastName?: string;
+  email: string;
   phone: string;
-  appliedAt: string;
-  status: 'pending' | 'approved' | 'rejected';
+  specialization?: string;
+  yearsOfExperience?: number;
+  submittedAt?: string;
+  verificationStatus: 'pending' | 'approved' | 'rejected';
 }
 
-const APPLICANTS: Applicant[] = [
-  { id: 'HM-115', name: 'أحمد علي محمد', specialty: 'سباكة وتأسيس', district: 'القاهرة', experience: '8 سنوات', phone: '010xxxxxxxx', appliedAt: 'منذ 5 دقائق', status: 'pending' },
-  { id: 'HM-114', name: 'سامر إبراهيم', specialty: 'كهرباء خفيفة', district: 'الجيزة', experience: '5 سنوات', phone: '011xxxxxxxx', appliedAt: 'منذ 20 دقيقة', status: 'pending' },
-  { id: 'HM-113', name: 'وليد حسن', specialty: 'نجارة', district: 'القاهرة', experience: '12 سنة', phone: '012xxxxxxxx', appliedAt: 'منذ ساعة', status: 'pending' },
-  { id: 'HM-112', name: 'يوسف صالح', specialty: 'كهرباء خفيفة', district: 'الجيزة', experience: '3 سنوات', phone: '015xxxxxxxx', appliedAt: 'منذ 2 ساعة', status: 'approved' },
-  { id: 'HM-111', name: 'محمد إبراهيم', specialty: 'تكييف وتبريد', district: 'القاهرة', experience: '7 سنوات', phone: '010xxxxxxxx', appliedAt: 'منذ 3 ساعات', status: 'rejected' },
-];
-
 export function AdminApprovals() {
-  const pending = APPLICANTS.filter(a => a.status === 'pending');
-  const reviewed = APPLICANTS.filter(a => a.status !== 'pending');
+  const { data: applicants = [], isLoading } = usePendingHandymen();
+  const approveHandyman = useApproveHandyman();
+  const rejectHandyman = useRejectHandyman();
+
+  const pending = applicants.filter(a => a.verificationStatus === 'pending');
+  const reviewed = applicants.filter(a => a.verificationStatus !== 'pending');
+
+  const handleApprove = (handymanId: string) => {
+    approveHandyman.mutate({ handymanId });
+  };
+
+  const handleReject = (handymanId: string) => {
+    rejectHandyman.mutate({ handymanId, reason: 'تم الرفض من قبل الإدارة' });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center text-white">
+        <div className="text-center">
+          <Loader size={40} className="animate-spin mx-auto mb-4" />
+          <p>جاري تحميل طلبات الموافقة...</p>
+        </div>
+      </div>
+    );
+  }
 
   const Row = ({ a }: { a: Applicant }) => (
     <tr className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
       <td className="px-6 py-4 font-mono font-extrabold text-blue-400 text-[0.85rem]">{a.id}</td>
       <td className="px-6 py-4">
-        <div className="font-extrabold">{a.name}</div>
-        <div className="text-[0.8rem] text-slate-400 font-bold">{a.phone}</div>
+        <div className="font-extrabold">{`${a.firstName || ''} ${a.lastName || ''}`.trim() || 'مستخدم'}</div>
+        <div className="text-[0.8rem] text-slate-400 font-bold">{a.phone || 'N/A'}</div>
       </td>
-      <td className="px-6 py-4 font-bold text-slate-300">{a.specialty}</td>
-      <td className="px-6 py-4 font-bold text-slate-300">{a.district}</td>
-      <td className="px-6 py-4 font-bold text-slate-300">{a.experience}</td>
-      <td className="px-6 py-4 text-[0.8rem] text-slate-400 font-bold">{a.appliedAt}</td>
+      <td className="px-6 py-4 font-bold text-slate-300">{a.specialization || 'N/A'}</td>
+      <td className="px-6 py-4 font-bold text-slate-300">{a.yearsOfExperience ? `${a.yearsOfExperience} سنوات` : 'N/A'}</td>
+      <td className="px-6 py-4 text-[0.8rem] text-slate-400 font-bold">{a.submittedAt ? new Date(a.submittedAt).toLocaleDateString('ar-EG') : 'N/A'}</td>
       <td className="px-6 py-4">
-        {a.status === 'pending' ? (
+        {a.verificationStatus === 'pending' ? (
           <div className="flex gap-2">
-            <button className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl font-extrabold text-[0.85rem] hover:bg-emerald-500 hover:text-white transition-all">
+            <button onClick={() => handleApprove(a.id)} className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl font-extrabold text-[0.85rem] hover:bg-emerald-500 hover:text-white transition-all">
               <CheckCircle size={14}/> قبول
             </button>
-            <button className="flex items-center gap-1.5 px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl font-extrabold text-[0.85rem] hover:bg-red-500 hover:text-white transition-all">
+            <button onClick={() => handleReject(a.id)} className="flex items-center gap-1.5 px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl font-extrabold text-[0.85rem] hover:bg-red-500 hover:text-white transition-all">
               <XCircle size={14}/> رفض
             </button>
             <button className="px-3 py-2 bg-white/5 text-slate-400 border border-white/10 rounded-xl font-extrabold text-[0.85rem] hover:bg-white/10 transition-all" title="عرض الملف">
@@ -49,10 +65,10 @@ export function AdminApprovals() {
           </div>
         ) : (
           <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.8rem] font-extrabold ${
-            a.status === 'approved' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'
+            a.verificationStatus === 'approved' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'
           }`}>
-            {a.status === 'approved' ? <CheckCircle size={12}/> : <XCircle size={12}/>}
-            {a.status === 'approved' ? 'تمت الموافقة' : 'تم الرفض'}
+            {a.verificationStatus === 'approved' ? <CheckCircle size={12}/> : <XCircle size={12}/>}
+            {a.verificationStatus === 'approved' ? 'تمت الموافقة' : 'تم الرفض'}
           </span>
         )}
       </td>
@@ -75,14 +91,14 @@ export function AdminApprovals() {
         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
           <CheckCircle size={22} className="text-emerald-400"/>
           <div>
-            <div className="font-black text-[1.4rem] text-emerald-400">{APPLICANTS.filter(a=>a.status==='approved').length}</div>
-            <div className="text-[0.8rem] text-slate-400 font-bold">تمت موافقتهم اليوم</div>
+            <div className="font-black text-[1.4rem] text-emerald-400">{applicants.filter(a=>a.verificationStatus==='approved').length}</div>
+            <div className="text-[0.8rem] text-slate-400 font-bold">تمت موافقتهم</div>
           </div>
         </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
           <XCircle size={22} className="text-red-400"/>
           <div>
-            <div className="font-black text-[1.4rem] text-red-400">{APPLICANTS.filter(a=>a.status==='rejected').length}</div>
+            <div className="font-black text-[1.4rem] text-red-400">{applicants.filter(a=>a.verificationStatus==='rejected').length}</div>
             <div className="text-[0.8rem] text-slate-400 font-bold">تم رفضهم</div>
           </div>
         </div>
@@ -100,7 +116,7 @@ export function AdminApprovals() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  {['رقم التسجيل', 'الاسم', 'التخصص', 'المحافظة', 'الخبرة', 'وقت التقديم', 'الإجراء'].map(h => (
+                  {['رقم التسجيل', 'الاسم', 'التخصص', 'الخبرة', 'تاريخ التقديم', 'الإجراء'].map(h => (
                     <th key={h} className="text-right px-6 py-4 text-[0.8rem] text-slate-400 border-b border-white/5 bg-white/[0.02] font-bold">{h}</th>
                   ))}
                 </tr>
@@ -123,7 +139,7 @@ export function AdminApprovals() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  {['رقم التسجيل', 'الاسم', 'التخصص', 'المحافظة', 'الخبرة', 'وقت التقديم', 'الحالة'].map(h => (
+                  {['رقم التسجيل', 'الاسم', 'التخصص', 'الخبرة', 'تاريخ التقديم', 'الحالة'].map(h => (
                     <th key={h} className="text-right px-6 py-4 text-[0.8rem] text-slate-400 border-b border-white/5 bg-white/[0.02] font-bold">{h}</th>
                   ))}
                 </tr>

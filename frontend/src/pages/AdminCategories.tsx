@@ -1,30 +1,63 @@
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useCategories } from '../hooks/useAdmin';
 
-interface Category {
-  id: number;
+interface CategoryUI {
+  id: string;
   name: string;
   icon: string;
   handymenCount: number;
-  completedJobs: number;
+  completedJobs?: number;
   active: boolean;
   color: string;
 }
 
-const INITIAL_CATEGORIES: Category[] = [
-  { id: 1, name: 'سباكة وتأسيس', icon: '💧', handymenCount: 120, completedJobs: 840, active: true, color: '#3b82f6' },
-  { id: 2, name: 'كهرباء خفيفة', icon: '⚡', handymenCount: 85, completedJobs: 520, active: true, color: '#f59e0b' },
-  { id: 3, name: 'تكييف وتبريد', icon: '❄️', handymenCount: 42, completedJobs: 310, active: true, color: '#10b981' },
-  { id: 4, name: 'نجارة', icon: '🔨', handymenCount: 15, completedJobs: 45, active: false, color: '#ef4444' },
-];
-
 export function AdminCategories() {
-  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+  const { data: categories = [], isLoading } = useCategories();
+  const [activeToggle, setActiveToggle] = useState<Record<string, boolean>>(
+    Object.fromEntries(categories.map(c => [c.id, c.isActive ?? true]))
+  );
 
-  const toggleCategory = (id: number) => {
-    setCategories(prev => prev.map(c => c.id === id ? { ...c, active: !c.active } : c));
+  const toggleCategory = (id: string) => {
+    setActiveToggle(prev => ({ ...prev, [id]: !prev[id] }));
+    // TODO: Call updateCategory API when implemented
   };
+
+  // Color mapping for categories based on name
+  const getCategoryColor = (name: string): string => {
+    const colors: Record<string, string> = {
+      'سباكة': '#3b82f6',
+      'كهرباء': '#f59e0b',
+      'تكييف': '#10b981',
+      'نجارة': '#ef4444',
+      'دهانات': '#8b5cf6',
+      'تشطيب': '#ec4899',
+    };
+    return colors[name] || '#3b82f6';
+  };
+
+  // Map API data to UI format
+  const categoriesUI: CategoryUI[] = categories.map(c => ({
+    id: c.id,
+    name: c.name,
+    icon: '📁', // Default icon - can be improved with better mapping
+    handymenCount: c.handymenCount || 0,
+    completedJobs: c.requestsCount || 0,
+    active: activeToggle[c.id] ?? (c.isActive ?? true),
+    color: getCategoryColor(c.name),
+  }));
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] flex items-center justify-center">
+        <div className="text-center">
+          <Loader size={40} className="animate-spin mx-auto mb-4 text-blue-500" />
+          <p className="text-[#64748b] font-bold">جاري تحميل الأقسام...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] p-8 font-sans animate-fade-in-up">
@@ -49,7 +82,7 @@ export function AdminCategories() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {categories.map(cat => (
+        {categoriesUI.map(cat => (
           <div key={cat.id} className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-sm hover:shadow-md transition-all flex flex-col gap-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -84,7 +117,7 @@ export function AdminCategories() {
                 <div className="text-[0.8rem] text-[#64748b] font-bold">فني معتمد</div>
               </div>
               <div className="flex-1 text-center border-l border-slate-200 last:border-0 pl-4">
-                <div className="text-[1.1rem] font-black text-[#0f172a]">{cat.completedJobs}</div>
+                <div className="text-[1.1rem] font-black text-[#0f172a]">{cat.completedJobs || 0}</div>
                 <div className="text-[0.8rem] text-[#64748b] font-bold">طلب مكتمل</div>
               </div>
             </div>

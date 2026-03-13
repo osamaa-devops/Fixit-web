@@ -55,6 +55,11 @@ export interface Review {
 }
 
 export const handymanService = {
+  getMyProfile: async (): Promise<HandymanProfile> => {
+    const response = await apiClient.get('/handymen/me');
+    return response.data;
+  },
+
   getProfile: async (handymanId: string): Promise<HandymanProfile> => {
     const response = await apiClient.get(`/handymen/${handymanId}`);
     return response.data;
