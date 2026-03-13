@@ -43,7 +43,7 @@ export function CustomerHistory() {
     );
   }
 
-  const filtered = filter === 'all' ? history : history.filter(r => r.status === filter);
+  const filtered = filter === 'all' ? history : history.filter((r: HistoryItemData) => r.status === filter);
 
   return (
     <div className="w-[95%] max-w-[900px] mx-auto mt-10 mb-20 font-sans text-text-primary fade-in-up">

@@ -18,8 +18,8 @@ export function AdminApprovals() {
   const approveHandyman = useApproveHandyman();
   const rejectHandyman = useRejectHandyman();
 
-  const pending = applicants.filter(a => a.verificationStatus === 'pending');
-  const reviewed = applicants.filter(a => a.verificationStatus !== 'pending');
+  const pending = applicants.filter((a: Applicant) => a.verificationStatus === 'pending');
+  const reviewed = applicants.filter((a: Applicant) => a.verificationStatus !== 'pending');
 
   const handleApprove = (handymanId: string) => {
     approveHandyman.mutate({ handymanId });
@@ -91,14 +91,14 @@ export function AdminApprovals() {
         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
           <CheckCircle size={22} className="text-emerald-400"/>
           <div>
-            <div className="font-black text-[1.4rem] text-emerald-400">{applicants.filter(a=>a.verificationStatus==='approved').length}</div>
+            <div className="font-black text-[1.4rem] text-emerald-400">{applicants.filter((a: Applicant)=>a.verificationStatus==='approved').length}</div>
             <div className="text-[0.8rem] text-slate-400 font-bold">تمت موافقتهم</div>
           </div>
         </div>
         <div className="bg-red-500/10 border border-red-500/20 rounded-2xl px-6 py-4 flex items-center gap-3">
           <XCircle size={22} className="text-red-400"/>
           <div>
-            <div className="font-black text-[1.4rem] text-red-400">{applicants.filter(a=>a.verificationStatus==='rejected').length}</div>
+            <div className="font-black text-[1.4rem] text-red-400">{applicants.filter((a: Applicant)=>a.verificationStatus==='rejected').length}</div>
             <div className="text-[0.8rem] text-slate-400 font-bold">تم رفضهم</div>
           </div>
         </div>
